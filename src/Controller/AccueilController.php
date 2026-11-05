@@ -22,12 +22,7 @@ class AccueilController extends AbstractController
         return new Response("<h1>Bonjour $prenom ! Bienvenue sur Symfony 7.4</h1>");
     }
 
-    #[Route(
-        '/profil/{id}',
-        name: 'app_profil',
-        requirements: ['id' => '\d+'],
-        defaults: ['id' => 1]
-    )]
+    #[Route('/profil/{id}', name: 'app_profil', requirements: ['id' => '\d+'], defaults: ['id' => 1])]
     public function profil(int $id): Response
     {
         return new Response("<h1>Profil de l'utilisateur n°$id</h1>");
