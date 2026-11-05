@@ -1,20 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AccueilController!{% endblock %}
+{% block title %}Home - My Symfony Website{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container py-5">
+        <h1 class="display-4 fw-bold">Welcome to My Symfony Website!</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/fadwa/tp1_symfony/src/Controller/AccueilController.php</code></li>
-        <li>Your template at <code>/home/fadwa/tp1_symfony/templates/accueil/index.html.twig</code></li>
-    </ul>
+        <p class="fs-5 mt-3">
+            Discover my first website developed using Symfony 7.4 and Twig.
+        </p>
+
+        <a href="{{ path('app_articles') }}" class="btn btn-dark btn-lg mt-3">
+            Explore Articles
+        </a>
+    </div>
 </div>
+
+<div class="row text-center mt-5">
+
+    <div class="col-md-6">
+        <h3>About This Project</h3>
+        <p>
+            This project is created as part of my Symfony practical work.
+            It demonstrates controllers, routes and Twig templates.
+        </p>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Our Articles</h3>
+        <p>
+            Discover different articles about web development,
+            Symfony, PHP and other technologies.
+        </p>
+
+        <a href="{{ path('app_articles') }}" class="btn btn-outline-dark">
+            View Articles
+        </a>
+    </div>
+
+</div>
+
 {% endblock %}
