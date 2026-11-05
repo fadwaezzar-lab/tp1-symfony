@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.titre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>{{ article.titre }}</h1>
+
+    <p><strong>Author:</strong> {{ article.auteur }}</p>
+
+    <p><strong>Content:</strong></p>
+    <p>{{ article.contenu }}</p>
+
+    <p>
+        <strong>Date:</strong>
+        {{ article.dateCreation|date('d/m/Y H:i') }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {% if article.publie %}
+            <span class="badge bg-success">Published</span>
+        {% else %}
+            <span class="badge bg-secondary">Draft</span>
+        {% endif %}
+    </p>
+
+    <a href="{{ path('app_articles') }}" class="btn btn-secondary">
+        Back to Articles
+    </a>
+</div>
+{% endblock %}
