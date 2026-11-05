@@ -1,13 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Page d'accueil</title>
-</head>
-<body>
-    <h1>Bienvenue sur ma page d'accueil !</h1>
-    <p>Mon premier contrôleur Symfony fonctionne.</p>
-    <p>Nom du contrôleur : {{ controller_name }}</p>
-</body>
-</html>
+{% extends 'base.html.twig' %}
 
+{% block title %}Home - My Symfony Website{% endblock %}
+
+{% block body %}
+
+<div class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container py-5">
+        <h1 class="display-4 fw-bold">Welcome to My Symfony Website!</h1>
+
+        <p class="fs-5 mt-3">
+            Discover my first website developed using Symfony 7.4 and Twig.
+        </p>
+
+        <a href="{{ path('app_articles') }}" class="btn btn-dark btn-lg mt-3">
+            Explore Articles
+        </a>
+    </div>
+</div>
+
+<div class="row text-center mt-5">
+
+    <div class="col-md-6">
+        <h3>About This Project</h3>
+        <p>
+            This project is created as part of my Symfony practical work.
+            It demonstrates controllers, routes and Twig templates.
+        </p>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Our Articles</h3>
+        <p>
+            Discover different articles about web development,
+            Symfony, PHP and other technologies.
+        </p>
+
+        <a href="{{ path('app_articles') }}" class="btn btn-outline-dark">
+            View Articles
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}
