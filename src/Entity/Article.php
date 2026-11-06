@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -14,15 +15,22 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Title is required.')]
+    #[Assert\Length(min: 5, max: 255)]
     private ?string $titre = null;
 
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'Content is required.')]
+    #[Assert\Length(min: 20)]
     private ?string $contenu = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Author is required.')]
+    #[Assert\Length(min: 2, max: 100)]
     private ?string $auteur = null;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\NotNull(message: 'Creation date is required.')]
     private ?\DateTime $dateCreation = null;
 
     #[ORM\Column]
@@ -88,4 +96,3 @@ class Article
         return $this;
     }
 }
-
