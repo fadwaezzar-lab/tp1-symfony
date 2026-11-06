@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,24 +24,27 @@ final class ArticlesController extends AbstractController
     }
 
     #[Route('/articles/nouveau', name: 'app_article_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        if ($request->isMethod('POST')) {
-            $article = new Article();
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $article = new Article();
 
-            $article->setTitre($request->request->get('titre'));
-            $article->setContenu($request->request->get('contenu'));
-            $article->setAuteur($request->request->get('auteur'));
-            $article->setDateCreation(new \DateTime());
-            $article->setPublie($request->request->get('publie') === '1');
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($article);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Article créé avec succès !');
 
             return $this->redirectToRoute('app_articles');
         }
 
-        return $this->render('articles/new.html.twig');
+        return $this->render('articles/new.html.twig', [
+            'formulaire' => $form,
+        ]);
     }
 
     #[Route('/articles/{id}', name: 'app_article_show', requirements: ['id' => '\d+'])]

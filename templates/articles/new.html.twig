@@ -1,37 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Article{% endblock %}
+{% block title %}Nouvel article{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="mb-4">Add a New Article</h1>
+    <h1>Ajouter un article</h1>
 
-    <form method="POST">
-        <div class="mb-3">
-            <label class="form-label">Title</label>
-            <input type="text" name="titre" class="form-control" required>
-        </div>
+    {{ form_start(formulaire) }}
 
-        <div class="mb-3">
-            <label class="form-label">Content</label>
-            <textarea name="contenu" class="form-control" rows="5" required></textarea>
-        </div>
+        {{ form_row(formulaire.titre) }}
+        {{ form_row(formulaire.contenu) }}
+        {{ form_row(formulaire.auteur) }}
+        {{ form_row(formulaire.dateCreation) }}
+        {{ form_row(formulaire.publie) }}
 
-        <div class="mb-3">
-            <label class="form-label">Author</label>
-            <input type="text" name="auteur" class="form-control" required>
-        </div>
+        {{ form_row(formulaire.enregistrer) }}
 
-        <div class="mb-3">
-            <label class="form-label">Published?</label>
-            <select name="publie" class="form-select">
-                <option value="1">Yes</option>
-                <option value="0">No</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Save Article</button>
-        <a href="{{ path('app_articles') }}" class="btn btn-secondary">Cancel</a>
-    </form>
+    {{ form_end(formulaire) }}
 </div>
 {% endblock %}
+
