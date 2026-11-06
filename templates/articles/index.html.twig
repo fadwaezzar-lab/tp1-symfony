@@ -67,6 +67,30 @@
         color: #555;
         font-weight: bold;
     }
+
+    .btn-new {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 16px;
+        background-color: #222;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .btn-new:hover {
+        background-color: #444;
+        color: white;
+    }
+
+    .btn-details {
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+    .btn-details:hover {
+        text-decoration: underline;
+    }
 </style>
 
 <div class="articles-container">
@@ -76,6 +100,10 @@
     <p class="description">
         Découvrez tous les articles disponibles.
     </p>
+
+    <a href="{{ path('app_article_new') }}" class="btn-new">
+        + Ajouter un article
+    </a>
 
     {% if articles is empty %}
 
@@ -91,6 +119,7 @@
                     <th>Titre</th>
                     <th>Auteur</th>
                     <th>Statut</th>
+                    <th>Action</th>
                 </tr>
             </thead>
 
@@ -107,14 +136,17 @@
 
                         <td>
                             {% if article.publie %}
-                                <span class="badge published">
-                                    Publié
-                                </span>
+                                <span class="badge published">Publié</span>
                             {% else %}
-                                <span class="badge draft">
-                                    Brouillon
-                                </span>
+                                <span class="badge draft">Brouillon</span>
                             {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{{ path('app_article_show', {'id': article.id}) }}"
+                               class="btn-details">
+                                Voir détails
+                            </a>
                         </td>
                     </tr>
 
