@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ArticlesController extends AbstractController
 {
@@ -24,12 +25,16 @@ final class ArticlesController extends AbstractController
     }
 
     #[Route('/articles/nouveau', name: 'app_article_new')]
+    #[IsGranted("ROLE_USER")]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
-        $article = new Article();
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
+        $article = new Article();
+        $article->setAuteurUser($this->getUser());
+$article->setAuteur($this->getUser()->getUserIdentifier());
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
@@ -68,10 +73,16 @@ final class ArticlesController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $article = $repository->find($id);
 
         if (!$article) {
             throw $this->createNotFoundException('Article not found');
+        }
+
+        if ($article->getAuteurUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
         }
 
         $form = $this->createForm(ArticleType::class, $article);
@@ -100,10 +111,16 @@ final class ArticlesController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $article = $repository->find($id);
 
         if (!$article) {
             throw $this->createNotFoundException('Article not found');
+        }
+
+        if ($article->getAuteurUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
         }
 
         if ($this->isCsrfTokenValid(
