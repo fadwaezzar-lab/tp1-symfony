@@ -3,7 +3,7 @@
 {% block title %}Liste des articles{% endblock %}
 
 {% block body %}
-
+<p class="alert alert-info">Number of visits: {{ nbVisites }}</p>
 <style>
     .articles-container {
         max-width: 1000px;
@@ -165,5 +165,16 @@
     {% endif %}
 
 </div>
+<h2>Latest published articles</h2>
 
+{% for article in derniersArticles %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5>{{ article.titre }}</h5>
+            <p>{{ article.contenu }}</p>
+        </div>
+    </div>
+{% else %}
+    <p>No published articles yet.</p>
+{% endfor %}
 {% endblock %}
