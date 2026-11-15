@@ -15,14 +15,17 @@ class TacheController extends AbstractController
     #[Route('/taches', name: 'app_taches')]
     public function index(TacheRepository $repository): Response
     {
-        $taches = $repository->findBy([], ['terminee' => 'ASC']);
+        $taches = $repository->findBy([], [
+            'terminee' => 'ASC',
+            'dateCreation' => 'DESC'
+        ]);
 
         return $this->render('taches/index.html.twig', [
             'taches' => $taches,
         ]);
     }
 
-    #[Route('/taches/ajouter', name: 'app_tache_new')]
+    #[Route('/taches/ajouter', name: 'app_tache_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
@@ -69,3 +72,4 @@ class TacheController extends AbstractController
         return $this->redirectToRoute('app_taches');
     }
 }
+
