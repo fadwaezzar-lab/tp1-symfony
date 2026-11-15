@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}To-Do List{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>My To-Do List</h1>
+
+    <a href="{{ path('app_tache_new') }}" class="btn btn-primary mb-3">
+        + Add a task
+    </a>
+
+    {% for tache in taches %}
+        <div class="card mb-3 p-3">
+            <h5>
+                {% if tache.terminee %}
+                    <del>{{ tache.titre }}</del>
+                    <span class="badge bg-success">Completed</span>
+                {% else %}
+                    {{ tache.titre }}
+                    <span class="badge bg-warning">Pending</span>
+                {% endif %}
+            </h5>
+
+            <a href="{{ path('app_tache_show', {id: tache.id}) }}"
+               class="btn btn-sm btn-info">Details</a>
+
+            {% if not tache.terminee %}
+                <a href="{{ path('app_tache_terminer', {id: tache.id}) }}"
+                   class="btn btn-sm btn-success mt-2">Mark as completed</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No tasks yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
