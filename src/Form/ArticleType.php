@@ -21,7 +21,6 @@ class ArticleType extends AbstractType
         $builder
             ->add('titre', TextType::class)
             ->add('contenu', TextareaType::class)
-            ->add('auteur', TextType::class)
             ->add('dateCreation', DateTimeType::class, [
                 'widget' => 'single_text',
             ])

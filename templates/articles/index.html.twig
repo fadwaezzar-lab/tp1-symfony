@@ -101,9 +101,11 @@
         Découvrez tous les articles disponibles.
     </p>
 
+    {% if is_granted("ROLE_USER") %}
     <a href="{{ path('app_article_new') }}" class="btn-new">
         + Ajouter un article
     </a>
+    {% endif %}
 
     {% if articles is empty %}
 
