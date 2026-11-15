@@ -25,6 +25,22 @@
         {% endif %}
     </p>
 
+    <a href="{{ path('app_article_modifier', {'id': article.id}) }}"
+       class="btn btn-warning">
+        Modify
+    </a>
+
+    <form method="post"
+          action="{{ path('app_article_supprimer', {'id': article.id}) }}"
+          style="display:inline-block;"
+          onsubmit="return confirm('Are you sure you want to delete this article?');">
+
+        <input type="hidden" name="_token"
+               value="{{ csrf_token('supprimer_' ~ article.id) }}">
+
+        <button class="btn btn-danger">Delete</button>
+    </form>
+
     <a href="{{ path('app_articles') }}" class="btn btn-secondary">
         Back to Articles
     </a>

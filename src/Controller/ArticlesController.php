@@ -60,4 +60,64 @@ final class ArticlesController extends AbstractController
             'article' => $article,
         ]);
     }
+
+    #[Route('/articles/{id}/modifier', name: 'app_article_modifier', requirements: ['id' => '\d+'])]
+    public function modifier(
+        int $id,
+        ArticleRepository $repository,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $article = $repository->find($id);
+
+        if (!$article) {
+            throw $this->createNotFoundException('Article not found');
+        }
+
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Article modifié avec succès !');
+
+            return $this->redirectToRoute('app_article_show', [
+                'id' => $article->getId(),
+            ]);
+        }
+
+        return $this->render('articles/modifier.html.twig', [
+            'formulaire' => $form,
+            'article' => $article,
+        ]);
+    }
+
+    #[Route('/articles/{id}/supprimer', name: 'app_article_supprimer', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function supprimer(
+        int $id,
+        ArticleRepository $repository,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $article = $repository->find($id);
+
+        if (!$article) {
+            throw $this->createNotFoundException('Article not found');
+        }
+
+        if ($this->isCsrfTokenValid(
+            'supprimer_' . $article->getId(),
+            $request->request->get('_token')
+        )) {
+            $entityManager->remove($article);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Article supprimé avec succès !');
+        } else {
+            $this->addFlash('danger', 'Token CSRF invalide !');
+        }
+
+        return $this->redirectToRoute('app_articles');
+    }
 }
