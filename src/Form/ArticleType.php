@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Article;
+use App\Entity\Categorie;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -24,6 +26,12 @@ class ArticleType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('publie', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('categorie', EntityType::class, [
+                'class' => Categorie::class,
+                'choice_label' => 'nom',
+                'placeholder' => 'Choose a category',
                 'required' => false,
             ])
             ->add('enregistrer', SubmitType::class);

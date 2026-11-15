@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Category{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Add a Category</h1>
+
+    {{ form_start(formulaire) }}
+        {{ form_row(formulaire.nom) }}
+        {{ form_row(formulaire.description) }}
+        {{ form_row(formulaire.enregistrer) }}
+    {{ form_end(formulaire) }}
+
+    <a href="{{ path('app_categories') }}">Back to categories</a>
+</div>
+{% endblock %}
