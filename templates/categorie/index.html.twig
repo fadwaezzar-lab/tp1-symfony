@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Categories</h1>
+
+    <a href="{{ path('app_categorie_new') }}" class="btn btn-primary mb-3">
+        Add a category
+    </a>
+
+    {% for categorie in categories %}
+        <div class="card mb-3 p-3">
+            <h4>{{ categorie.nom }}</h4>
+            <p>{{ categorie.description }}</p>
+        </div>
+    {% else %}
+        <p>No categories found.</p>
+    {% endfor %}
+</div>
+{% endblock %}
