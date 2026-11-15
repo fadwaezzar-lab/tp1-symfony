@@ -9,32 +9,40 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class ArticlesController extends AbstractController
 {
     #[Route('/articles', name: 'app_articles')]
-    public function index(ArticleRepository $repository): Response
-    {
-        $articles = $repository->findAll();
+    public function index(
+        ArticleRepository $repository,
+        RequestStack $requestStack
+    ): Response {
+        $session = $requestStack->getSession();
 
+        $nbVisites = $session->get('nb_visites', 0);
+        $session->set('nb_visites', $nbVisites + 1);
+
+        $articles = $repository->findAll();
+$derniersArticles = $repository->findLastPublished(3);
         return $this->render('articles/index.html.twig', [
             'articles' => $articles,
+            'nbVisites' => $nbVisites + 1,'derniersArticles' => $derniersArticles,
         ]);
     }
 
     #[Route('/articles/nouveau', name: 'app_article_new')]
-    #[IsGranted("ROLE_USER")]
+    #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $article = new Article();
         $article->setAuteurUser($this->getUser());
-$article->setAuteur($this->getUser()->getUserIdentifier());
+        $article->setAuteur($this->getUser()->getUserIdentifier());
+
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
@@ -52,35 +60,21 @@ $article->setAuteur($this->getUser()->getUserIdentifier());
         ]);
     }
 
-    #[Route('/articles/{id}', name: 'app_article_show', requirements: ['id' => '\d+'])]
-    public function show(int $id, ArticleRepository $repository): Response
+    #[Route('/articles/{id}', name: 'app_article_show', methods: ['GET'])]
+    public function show(Article $article): Response
     {
-        $article = $repository->find($id);
-
-        if (!$article) {
-            throw $this->createNotFoundException('Article not found');
-        }
-
         return $this->render('articles/show.html.twig', [
             'article' => $article,
         ]);
     }
 
-    #[Route('/articles/{id}/modifier', name: 'app_article_modifier', requirements: ['id' => '\d+'])]
+    #[Route('/articles/{id}/modifier', name: 'app_article_modifier', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function modifier(
-        int $id,
-        ArticleRepository $repository,
+        Article $article,
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
-        $article = $repository->find($id);
-
-        if (!$article) {
-            throw $this->createNotFoundException('Article not found');
-        }
-
         if ($article->getAuteurUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
@@ -93,46 +87,31 @@ $article->setAuteur($this->getUser()->getUserIdentifier());
 
             $this->addFlash('success', 'Article modifié avec succès !');
 
-            return $this->redirectToRoute('app_article_show', [
-                'id' => $article->getId(),
-            ]);
+            return $this->redirectToRoute('app_articles');
         }
 
-        return $this->render('articles/modifier.html.twig', [
+        return $this->render('articles/edit.html.twig', [
             'formulaire' => $form,
             'article' => $article,
         ]);
     }
 
-    #[Route('/articles/{id}/supprimer', name: 'app_article_supprimer', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/articles/{id}/supprimer', name: 'app_article_supprimer', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function supprimer(
-        int $id,
-        ArticleRepository $repository,
+        Article $article,
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
-        $article = $repository->find($id);
-
-        if (!$article) {
-            throw $this->createNotFoundException('Article not found');
-        }
-
         if ($article->getAuteurUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        if ($this->isCsrfTokenValid(
-            'supprimer_' . $article->getId(),
-            $request->request->get('_token')
-        )) {
+        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
             $entityManager->remove($article);
             $entityManager->flush();
 
             $this->addFlash('success', 'Article supprimé avec succès !');
-        } else {
-            $this->addFlash('danger', 'Token CSRF invalide !');
         }
 
         return $this->redirectToRoute('app_articles');
