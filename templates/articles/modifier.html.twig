@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un article{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Modifier l'article</h1>
+
+        {{ form_start(formulaire) }}
+            {{ form_widget(formulaire) }}
+        {{ form_end(formulaire) }}
+
+        <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-secondary mt-3">
+            Retour
+        </a>
+    </div>
+{% endblock %}
